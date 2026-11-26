@@ -11,7 +11,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-scripts
 RUN npm install
 RUN npm run build
 
