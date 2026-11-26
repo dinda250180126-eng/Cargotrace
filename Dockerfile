@@ -11,10 +11,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-scripts
-RUN npm install
-RUN npm run build
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+RUN npm install && npm run build
 
 EXPOSE 8080
 
-CMD php artisan config:clear && php artisan cache:clear && exec php -S 0.0.0.0:${PORT:-8080} -t public
+# Jalankan server PHP secara blocking agar VM Railway tidak mematikan kontainer
+CMD php -S 0.0.0.0:8080 -t public
