@@ -189,13 +189,13 @@
         </div>
     </div>
 
-    <!-- Script jQuery & Leaflet (Logika Peta Tetap Asli) -->
+    <!-- Script jQuery & Leaflet (Logika Peta Tetap Asli, Bebas Error Kutip) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         $(document).ready(function() {
-            var rawOrigin = "{!! $shipment->origin->name ?? '' !!}";
-            var rawDest = "{!! $shipment->destination->name ?? '' !!}";
+            var rawOrigin = "{!! addslashes($shipment->origin->name ?? '') !!}";
+            var rawDest = "{!! addslashes($shipment->destination->name ?? '') !!}";
             
             var originName = rawOrigin ? rawOrigin.split(' (')[0] : '';
             var destName = rawDest ? rawDest.split(' (')[0] : '';
