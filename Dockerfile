@@ -17,4 +17,4 @@ RUN npm run build
 
 EXPOSE 8080
 
-CMD php artisan config:clear && php artisan cache:clear && php -S 0.0.0.0:${PORT:-8080} -t public
+CMD php artisan config:clear && php artisan cache:clear && exec php -S 0.0.0.0:${PORT:-8080} -t public
