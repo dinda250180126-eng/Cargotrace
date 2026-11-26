@@ -17,5 +17,5 @@ RUN npm run build
 
 EXPOSE 8080
 
-# Menggunakan port dinamis dari environment Railway ($PORT)
-CMD php artisan package:discover --ansi && php -S 0.0.0.0:${PORT:-8080} -t public
+# Jalankan artisan config/cache clear saat startup agar tidak error, lalu jalankan server PHP
+CMD php artisan config:clear && php artisan cache:clear && php -S 0.0.0.0:${PORT:-8080} -t public
