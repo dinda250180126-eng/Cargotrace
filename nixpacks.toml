@@ -1,2 +1,6 @@
-[phases.setup]
-phpPkgs = ["php", "php-mysql", "composer", "pdo"]
+[phases.build]
+cmds = [
+    "composer install --no-dev --optimize-autoloader --ignore-platform-reqs",
+    "php artisan config:clear",
+    "php artisan cache:clear"
+]
