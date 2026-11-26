@@ -64,6 +64,22 @@ php artisan serve
 
 You can now access the app at http://localhost:8000.
 
+## Deploy to Vercel
+
+The Vercel deployment uses the `Dockerfile.vercel` container configuration to run Laravel with FrankenPHP. Keep `Dockerfile.vercel`, `Caddyfile`, and `vercel.json` in the repository root.
+
+In the Vercel project settings, use the repository root as the Root Directory and clear any custom Build Command, Install Command, or Output Directory overrides so Vercel uses the container configuration.
+
+Before deploying, add these environment variables in **Settings > Environment Variables**:
+
+- `APP_KEY`: generate a key locally with `php artisan key:generate --show` and add its output here. Do not commit the key.
+- `APP_ENV=production`
+- `APP_DEBUG=false`
+- `APP_URL`: the Vercel deployment URL
+- `DB_CONNECTION=mysql`, plus `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` for a managed database.
+
+After the first deployment, run `php artisan migrate --force` against the managed database. Vercel container storage is ephemeral, so do not rely on the local SQLite database or local files for persistent production data.
+
 💡 How to Log In
 
 CargoTrace uses a Seamless Auto-Registration system:
