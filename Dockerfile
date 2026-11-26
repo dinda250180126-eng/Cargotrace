@@ -11,12 +11,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 
-# Install composer tanpa database check saat build
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-scripts
 RUN npm install
 RUN npm run build
 
 EXPOSE 8080
 
-# Jalankan perintah post-install dan jalankan server web PHP
-CMD php artisan package:discover --ansi && php -S 0.0.0.0:8080 -t public
+# Menggunakan port dinamis dari environment Railway ($PORT)
+CMD php artisan package:discover --ansi && php -S 0.0.0.0:${PORT:-8080} -t public
