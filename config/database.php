@@ -2,6 +2,23 @@
 
 use Illuminate\Support\Str;
 
+$mysqlOptions = [];
+if (extension_loaded('pdo_mysql')) {
+    if (filter_var(env('DB_PERSISTENT', false), FILTER_VALIDATE_BOOLEAN)) {
+        $mysqlOptions[PDO::ATTR_PERSISTENT] = true;
+    }
+    $sslCa = env('MYSQL_ATTR_SSL_CA');
+    if (! $sslCa && filter_var(env('DB_SSL', false), FILTER_VALIDATE_BOOLEAN) && file_exists('/etc/ssl/certs/ca-certificates.crt')) {
+        $sslCa = '/etc/ssl/certs/ca-certificates.crt';
+    }
+    $sslAttr = defined('Pdo\Mysql::ATTR_SSL_CA')
+        ? constant('Pdo\Mysql::ATTR_SSL_CA')
+        : (defined('PDO::MYSQL_ATTR_SSL_CA') ? PDO::MYSQL_ATTR_SSL_CA : null);
+    if ($sslCa && $sslAttr) {
+        $mysqlOptions[$sslAttr] = $sslCa;
+    }
+}
+
 return [
 
     /*
@@ -45,7 +62,7 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DB_URL'),
+            'url' => env('DB_URL') ?: env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),
@@ -58,15 +75,12 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => array_filter([
-                PDO::ATTR_PERSISTENT => true,
-                // SSL CA dihapus agar tidak error undefined constant / null pada server cloud
-            ]),
+            'options' => $mysqlOptions,
         ],
 
         'mariadb' => [
             'driver' => 'mariadb',
-            'url' => env('DB_URL'),
+            'url' => env('DB_URL') ?: env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),
@@ -79,14 +93,12 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => array_filter([
-                PDO::ATTR_PERSISTENT => true,
-            ]),
+            'options' => $mysqlOptions,
         ],
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DB_URL'),
+            'url' => env('DB_URL') ?: env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'laravel'),
