@@ -7,8 +7,9 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\UserController;
 
+// Mengarahkan halaman utama (/) langsung ke halaman login bawaan Laravel (Auth)
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // RUTE DASHBOARD SUDAH DIPERBARUI UNTUK MENGIRIM DATA STATISTIK & GRAFIK
@@ -40,7 +41,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/shipments', [ShipmentController::class, 'store'])->name('shipments.store');
     
     // Rute Baru: Detail dan Hapus 
-    // SANGAT PENTING: Wajib ditaruh di bawah 'create' agar Laravel tidak bentrok
     Route::get('/shipments/{shipment}', [ShipmentController::class, 'show'])->name('shipments.show');
     Route::delete('/shipments/{shipment}', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
 
