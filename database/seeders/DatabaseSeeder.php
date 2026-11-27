@@ -56,5 +56,7 @@ class DatabaseSeeder extends Seeder
                 'longitude' => 106.6558
             ],
         ]);
+
+        $this->call(LocationSeeder::class);
     }
 }

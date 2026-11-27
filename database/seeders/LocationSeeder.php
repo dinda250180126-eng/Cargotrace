@@ -3,49 +3,40 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Location;
+use Illuminate\Support\Facades\DB;
 
 class LocationSeeder extends Seeder
 {
     public function run(): void
     {
-        $airports = [
-            // Asia
-            ['name' => 'Changi Airport (SIN) - Singapore'],
-            ['name' => 'Kuala Lumpur International Airport (KUL) - Malaysia'],
-            ['name' => 'Suvarnabhumi Airport (BKK) - Thailand'],
-            ['name' => 'Beijing Capital International Airport (PEK) - China'],
-            ['name' => 'Hong Kong International Airport (HKG) - Hong Kong'],
-            
-            // Timur Tengah
-            ['name' => 'Dubai International Airport (DXB) - UAE'],
-            ['name' => 'Hamad International Airport (DOH) - Qatar'],
-            ['name' => 'King Abdulaziz International Airport (JED) - Saudi Arabia'],
+        $path = database_path('seeders/data/locations.json');
+        if (! file_exists($path)) {
+            return;
+        }
 
-            // Eropa
-            ['name' => 'Heathrow Airport (LHR) - United Kingdom'],
-            ['name' => 'Charles de Gaulle Airport (CDG) - France'],
-            ['name' => 'Frankfurt Airport (FRA) - Germany'],
-            ['name' => 'Amsterdam Airport Schiphol (AMS) - Netherlands'],
-
-            // Amerika
-            ['name' => 'John F. Kennedy International Airport (JFK) - USA'],
-            ['name' => 'Los Angeles International Airport (LAX) - USA'],
-            ['name' => 'Toronto Pearson International Airport (YYZ) - Canada'],
-            ['name' => 'São Paulo/Guarulhos International Airport (GRU) - Brazil'],
-
-            // Australia & Oseania
-            ['name' => 'Sydney Kingsford Smith Airport (SYD) - Australia'],
-            ['name' => 'Melbourne Airport (MEL) - Australia'],
-            ['name' => 'Auckland Airport (AKL) - New Zealand'],
-        ];
+        $airports = json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+        $existingNames = array_flip(DB::table('locations')->pluck('name')->all());
+        $now = now();
+        $batch = [];
 
         foreach ($airports as $airport) {
-            // Menambahkan 'country_code' => 'INT' sebagai nilai default agar database tidak error
-            Location::firstOrCreate(
-                ['name' => $airport['name']],
-                ['country_code' => 'INT']
-            );
+            if (isset($existingNames[$airport['name']])) {
+                continue;
+            }
+
+            $existingNames[$airport['name']] = true;
+            $batch[] = [
+                'name' => $airport['name'],
+                'country_code' => $airport['country_code'] ?? 'INT',
+                'latitude' => $airport['latitude'] ?? null,
+                'longitude' => $airport['longitude'] ?? null,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        foreach (array_chunk($batch, 150) as $chunk) {
+            DB::table('locations')->insert($chunk);
         }
     }
 }

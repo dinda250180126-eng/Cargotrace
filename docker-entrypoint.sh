@@ -35,21 +35,28 @@ if [ "${DB_CONNECTION:-sqlite}" = "sqlite" ]; then
     fi
 fi
 
-# Run migrations and initial seed when users table is empty (non-fatal on transient DB errors)
+# Run migrations and initial seed when users or locations are missing (non-fatal on transient DB errors)
 if php artisan migrate --force --no-interaction; then
-    USER_COUNT=$(php -r '
+    COUNTS=$(php -r '
         require "/app/vendor/autoload.php";
         $app = require "/app/bootstrap/app.php";
         $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
         try {
-            echo Illuminate\Support\Facades\DB::table("users")->count();
+            $users = Illuminate\Support\Facades\DB::table("users")->count();
+            $locations = Illuminate\Support\Facades\DB::table("locations")->count();
+            echo $users . ":" . $locations;
         } catch (Throwable $e) {
-            echo "-1";
+            echo "-1:-1";
         }
-    ' 2>/dev/null || echo "-1")
+    ' 2>/dev/null || echo "-1:-1")
+
+    USER_COUNT=$(echo "$COUNTS" | cut -d: -f1)
+    LOCATION_COUNT=$(echo "$COUNTS" | cut -d: -f2)
 
     if [ "$USER_COUNT" = "0" ]; then
         php artisan db:seed --force --no-interaction || echo "Warning: DatabaseSeeder failed"
+    elif [ "$LOCATION_COUNT" != "-1" ] && [ "$LOCATION_COUNT" -le 25 ]; then
+        php artisan db:seed --class=LocationSeeder --force --no-interaction || echo "Warning: LocationSeeder failed"
     fi
 else
     echo "Warning: database migration skipped or failed at container startup"
