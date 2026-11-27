@@ -25,7 +25,7 @@ class UserController extends Controller
     {
         if (Auth::user()->role !== 'admin') abort(403);
 
-        $request->validate(['role' => 'required|in:admin,customer']);
+        $request->validate(['role' => 'required|in:admin,operator,customer']);
         $user->update(['role' => $request->role]);
 
         return redirect('/users')->with('success', 'Role untuk ' . $user->name . ' berhasil diubah menjadi ' . strtoupper($request->role) . '!');

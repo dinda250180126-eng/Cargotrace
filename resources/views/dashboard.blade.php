@@ -122,7 +122,7 @@
                         </a>
                         
                         <!-- Tombol 4 -->
-                        <a href="/audit_logs" class="block p-5 rounded-[1.5rem] bg-white border border-gray-200 border-b-[5px] border-b-gray-300 shadow-sm hover:shadow-xl hover:shadow-blue-900/10 hover:-translate-y-1 hover:border-b-blue-600 hover:bg-blue-50/50 transition-all duration-300 text-center group flex flex-col justify-center items-center">
+                        <a href="/audit-logs" class="block p-5 rounded-[1.5rem] bg-white border border-gray-200 border-b-[5px] border-b-gray-300 shadow-sm hover:shadow-xl hover:shadow-blue-900/10 hover:-translate-y-1 hover:border-b-blue-600 hover:bg-blue-50/50 transition-all duration-300 text-center group flex flex-col justify-center items-center">
                             <span class="block text-4xl mb-3 group-hover:scale-110 group-hover:rotate-3 transition-transform drop-shadow-sm">🛡️</span>
                             <span class="font-black text-gray-700 group-hover:text-blue-800 text-[10px] uppercase tracking-wider">Audit Log</span>
                         </a>

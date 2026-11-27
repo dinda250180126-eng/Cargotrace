@@ -32,6 +32,20 @@ class CarrierController extends Controller
         return redirect('/carriers')->with('success', 'Maskapai logistik baru berhasil ditambahkan!');
     }
 
+    public function update(Request $request, Carrier $carrier)
+    {
+        if (Auth::user()->role !== 'admin') abort(403);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:carriers,name,' . $carrier->id,
+            'code' => 'required|string|max:10',
+        ]);
+
+        $carrier->update($validated);
+
+        return redirect('/carriers')->with('success', 'Data maskapai berhasil diperbarui!');
+    }
+
     public function destroy(Carrier $carrier)
     {
         if (Auth::user()->role !== 'admin') abort(403);

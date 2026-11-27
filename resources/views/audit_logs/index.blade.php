@@ -52,9 +52,9 @@
                                 <td class="py-5 px-6 whitespace-nowrap align-middle">
                                     <div class="font-black text-gray-900 text-sm group-hover:text-blue-900 transition-colors flex items-center gap-2">
                                         <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-black text-[10px] border border-slate-200">
-                                            {{ strtoupper(substr($log->user->name ?? 'S', 0, 1)) }}
+                                            {{ strtoupper(substr($log->user_name ?? 'S', 0, 1)) }}
                                         </div>
-                                        {{ $log->user->name ?? 'System' }}
+                                        {{ $log->user_name ?? 'System' }}
                                     </div>
                                 </td>
 
